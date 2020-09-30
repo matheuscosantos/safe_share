@@ -42,8 +42,8 @@ V - informações acerca do uso compartilhado de dados pelo controlador e a fina
 - Implementação atendendo o parágrafo IV, V do artigo 9º, da lei LGBD no Back-end.
 
 ### Sprint 5
-- Desenvolver Front-end para a aplicação
-- Implementar o Front-end com o Back-end da aplicação
+- Desenvolvimento do Front-end para a aplicação
+- Implementação do Front-end com o Back-end da aplicação
 
 ### Sprint 6
-- Criar uma apresentação para o trabalho
+- Criação uma apresentação para o trabalho
