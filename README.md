@@ -4,7 +4,8 @@
 O projeto tem o intuito de demonstrar a aplicação do artigo 9º da lei LGPD em um sistema de compartilhamento de dados. Por meio de uma aplicação que simule isso
 
 ### Sistema safe_share
-Usaremos como aplicação prática uma loja de departamentos, com o intuito de demonstrar a modelagem e solução para o novo modelo da LGPD. Onde o cliente esteja ciente e concorde com o compartilhamento de dados pessoais, e possa a qualquer hora encerrar compartilhamentos e apagar dados do estabelecimento
+Usaremos como aplicação prática uma loja de departamentos, com o intuito de demonstrar a modelagem e solução para o novo modelo da LGPD. Onde focaremos na implemetação do art.9º
+e seus cinco primeiros parágrafos.
 
 ## O que é LGPD?
 [![](http://img.youtube.com/vi/y7SamL2wYSc/0.jpg)](http://www.youtube.com/watch?v=y7SamL2wYSc "O que é LGPD?")
