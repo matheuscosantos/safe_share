@@ -22,7 +22,11 @@ public class Carrinho {
     @OneToMany
     private Set<Produto> produtos;
 
-    public Carrinho(Set<Produto> produtos) {
+    @ManyToOne
+    private Cliente cliente;
+
+    public Carrinho(Set<Produto> produtos, Cliente cliente) {
         this.produtos = produtos;
+        this.cliente = cliente;
     }
 }
