@@ -1,7 +1,7 @@
 # Projeto Segurança da informação
 
 ## Objetivo
-Como a Lei Geral de Proteção de Dados entrou em vigor, no dia 27 de Agosto de 2020, as empresas terão que se adptar a essa mudança, duas das grandes são: 
+Como a Lei Geral de Proteção de Dados entrou em vigor, no dia 27 de Agosto de 2020, as empresas terão que se adaptar a essa mudança, duas das grandes são: 
 - Relatório de compartilhamento de dados para terceiros,
 - E solicitação da remoção dos dados pelos clientes.
 Sendo assim, a nossa proposta é criar uma ferramenta que possa gerar os relatórios e ofuscação dos dados caso o cliente solicite.
