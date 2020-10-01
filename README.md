@@ -1,11 +1,16 @@
 # Projeto Segurança da informação
 
-## Objetivo?
-O projeto tem o intuito de demonstrar a aplicação do artigo 9º da lei LGPD em um sistema de compartilhamento de dados. Por meio de uma aplicação que simule isso
+## Objetivo
+Como a Lei Geral de Proteção de Dados entrou em vigor, no dia 27 de Agosto de 2020, as empresas terão que se adptar a essa mudança, duas das grandes são: 
+- Relatório de compartilhamento de dados para terceiros,
+- E solicitação da remoção dos dados pelos clientes.
+Sendo assim, a nossa proposta é criar uma ferramenta que possa gerar os relatórios e ofuscação dos dados caso o cliente solicite.
 
-### Sistema safe_share
-Usaremos como aplicação prática uma loja de departamentos, com o intuito de demonstrar a modelagem e solução para o novo modelo da LGPD. Onde focaremos na implemetação do art.9º
-e seus cinco primeiros parágrafos.
+### Projeto safe_share
+Usaremos como prova de conceito: 
+- Criação de banco de dados para uma loja de departamentos.
+- Alteração no banco de dados para atender a geração de relatórios e ofuscação dos dados.
+- Criação de uma interface via API Rest para que o usuário possa fazer o pedido das mudanças.
 
 ## O que é LGPD?
 [![](http://img.youtube.com/vi/y7SamL2wYSc/0.jpg)](http://www.youtube.com/watch?v=y7SamL2wYSc "O que é LGPD?")
