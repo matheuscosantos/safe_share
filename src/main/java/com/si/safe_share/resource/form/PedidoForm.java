@@ -5,12 +5,14 @@ import com.si.safe_share.model.Cliente;
 import com.si.safe_share.model.Pedido;
 import com.si.safe_share.repository.CarrinhoRepository;
 import com.si.safe_share.repository.ClienteRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Getter
 public class PedidoForm {
     private Integer cliente;
     private Integer carrinho;
@@ -29,12 +31,11 @@ public class PedidoForm {
         Optional<Carrinho> carrinhoEncontradoOpt = carrinhoRepository.findById(pedidoForm.getCliente());
         Carrinho carrinho = carrinhoEncontradoOpt.get();
 
-        Pedido pedido = new Pedido();
-
-        pedido.setCliente(cliente);
-        pedido.setDataDoPedido(LocalDateTime.now());
-        pedido.setCarrinho(carrinho);
-
+        Pedido pedido = Pedido.builder()
+                .cliente(cliente)
+                .dataDoPedido(LocalDateTime.now())
+                .carrinho(carrinho)
+                .build();
         return pedido;
     }
 
@@ -45,18 +46,5 @@ public class PedidoForm {
         Pedido pedidoAtualizado = pedidoAntigo;
         return pedidoAtualizado;
     }
-
-    public Integer getCliente() {
-        return cliente;
-    }
-
-    public Integer getCarrinho() {
-        return carrinho;
-    }
-
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
-
 
 }

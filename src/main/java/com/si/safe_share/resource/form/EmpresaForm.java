@@ -1,14 +1,17 @@
 package com.si.safe_share.resource.form;
 
 import com.si.safe_share.model.Empresa;
+import lombok.Getter;
 
+@Getter
 public class EmpresaForm {
     private String nome;
 
 
     public Empresa toModel(EmpresaForm empresaForm) {
-        Empresa empresa = new Empresa();
-        empresa.setNome(empresaForm.getNome());
+        Empresa empresa = Empresa.builder()
+                .nome(empresaForm.getNome())
+                .build();
         return empresa;
     }
 
@@ -16,10 +19,5 @@ public class EmpresaForm {
         empresaAntiga.setNome(empresaNova.getNome());
         return empresaAntiga;
     }
-
-    public String getNome() {
-        return nome;
-    }
-
 
 }

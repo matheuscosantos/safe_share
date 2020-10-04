@@ -5,11 +5,13 @@ import com.si.safe_share.model.Empresa;
 import com.si.safe_share.model.LogCompartilhamento;
 import com.si.safe_share.repository.ClienteRepository;
 import com.si.safe_share.repository.EmpresaRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Getter
 public class LogCompartilhamentoForm {
     private LocalDate dataDeInicio;
     private LocalDate dataFinal;
@@ -31,35 +33,14 @@ public class LogCompartilhamentoForm {
         Optional<Empresa> empresaOpt = empresaRepository.findById(empresa);
         Empresa empresa = empresaOpt.get();
 
-        LogCompartilhamento logCompartilhamento = new LogCompartilhamento();
-
-        logCompartilhamento.setCliente(cliente);
-        logCompartilhamento.setEmpresa(empresa);
-        logCompartilhamento.setDataDeInicio(logCompartilhamentoForm.getDataDeInicio());
-        logCompartilhamento.setDataFinal(logCompartilhamentoForm.getDataFinal());
-        logCompartilhamento.setDadoCompartilhado(logCompartilhamentoForm.getDadoCompartilhado());
-
+        LogCompartilhamento logCompartilhamento = LogCompartilhamento.builder()
+                .cliente(cliente)
+                .empresa(empresa)
+                .dataDeInicio(logCompartilhamentoForm.getDataDeInicio())
+                .dataFinal(logCompartilhamentoForm.getDataFinal())
+                .dadoCompartilhado(logCompartilhamentoForm.getDadoCompartilhado())
+                .build();
         return logCompartilhamento;
-    }
-
-    public LocalDate getDataDeInicio() {
-        return dataDeInicio;
-    }
-
-    public LocalDate getDataFinal() {
-        return dataFinal;
-    }
-
-    public String getDadoCompartilhado() {
-        return dadoCompartilhado;
-    }
-
-    public Integer getCliente() {
-        return cliente;
-    }
-
-    public Integer getEmpresa() {
-        return empresa;
     }
 
 }

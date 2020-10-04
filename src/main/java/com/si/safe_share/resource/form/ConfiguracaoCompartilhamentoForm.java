@@ -3,10 +3,12 @@ package com.si.safe_share.resource.form;
 import com.si.safe_share.model.Cliente;
 import com.si.safe_share.model.ConfiguracaoCompartilhamento;
 import com.si.safe_share.repository.ClienteRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
+@Getter
 public class ConfiguracaoCompartilhamentoForm {
 
     private Integer cliente;
@@ -23,10 +25,11 @@ public class ConfiguracaoCompartilhamentoForm {
 
         ConfiguracaoCompartilhamento configuracaoCompartilhamento = new ConfiguracaoCompartilhamento();
 
-        configuracaoCompartilhamento.setCliente(cliente);
-        configuracaoCompartilhamento.setCompartilha_dados_compras(configuracaoCompartilhamentoForm.getCompartilha_dados_compras());
-        configuracaoCompartilhamento.setCompartilha_dados_pessoais(configuracaoCompartilhamentoForm.getCompartilha_dados_pessoais());
-
+        ConfiguracaoCompartilhamento.builder()
+                .cliente(cliente)
+                .compartilha_dados_compras(configuracaoCompartilhamentoForm.getCompartilha_dados_compras())
+                .compartilha_dados_pessoais(configuracaoCompartilhamentoForm.getCompartilha_dados_pessoais())
+                .build();
         return configuracaoCompartilhamento;
     }
 
@@ -38,18 +41,6 @@ public class ConfiguracaoCompartilhamentoForm {
         configuracaoCompartilhamentoAntiga.setCompartilha_dados_pessoais(configuracaoCompartilhamentoNova.getCompartilha_dados_pessoais());
         ConfiguracaoCompartilhamento configuracaoCompartilhamentoAtualizada = configuracaoCompartilhamentoAntiga;
         return configuracaoCompartilhamentoAtualizada;
-    }
-
-    public Integer getCliente() {
-        return cliente;
-    }
-
-    public Boolean getCompartilha_dados_pessoais() {
-        return compartilha_dados_pessoais;
-    }
-
-    public Boolean getCompartilha_dados_compras() {
-        return compartilha_dados_compras;
     }
 
 }

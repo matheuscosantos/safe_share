@@ -1,9 +1,6 @@
 package com.si.safe_share.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 public class ConfiguracaoCompartilhamento {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

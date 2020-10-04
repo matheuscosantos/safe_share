@@ -6,8 +6,9 @@ public class CategoriaForm {
     private String descricao;
 
     public Categoria toModel(CategoriaForm categoriaForm) {
-        Categoria categoria = new Categoria();
-        categoria.setDescricao(categoriaForm.getDescricao());
+        Categoria categoria = Categoria.builder()
+                .descricao(categoriaForm.getDescricao())
+                .build();
         return categoria;
     }
 

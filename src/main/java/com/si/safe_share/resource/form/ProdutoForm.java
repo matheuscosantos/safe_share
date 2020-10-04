@@ -3,11 +3,13 @@ package com.si.safe_share.resource.form;
 import com.si.safe_share.model.Categoria;
 import com.si.safe_share.model.Produto;
 import com.si.safe_share.repository.CategoriaRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
+@Getter
 public class ProdutoForm {
     private String descricao;
     private BigDecimal valor;
@@ -17,16 +19,13 @@ public class ProdutoForm {
     CategoriaRepository categoriaRepository;
 
     public Produto toModel(ProdutoForm produtoForm) {
-        final Optional<Categoria> categoria = categoriaRepository.findById(produtoForm.getCategoria());
-        Produto produto = new Produto();
-        if(categoria.isPresent()){
-            produto.setCategoria(categoria.get());
-            produto.setDescricao(produtoForm.getDescricao());
-            produto.setValor(produtoForm.getValor());
-            return produto;
-        }
-        produto.setDescricao(produtoForm.getDescricao());
-        produto.setValor(produtoForm.getValor());
+        final Optional<Categoria> categoriaOpt = categoriaRepository.findById(produtoForm.getCategoria());
+        Categoria categoria = categoriaOpt.get();
+        Produto produto = Produto.builder()
+                .descricao(produtoForm.getDescricao())
+                .valor(produtoForm.valor)
+                .categoria(categoria)
+                .build();
         return produto;
     }
 
@@ -37,18 +36,6 @@ public class ProdutoForm {
         Produto produtoAtualizado = new Produto();
         produtoAtualizado = produtoAntigo;
         return produtoAntigo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public Integer getCategoria() {
-        return categoria;
     }
 
 }

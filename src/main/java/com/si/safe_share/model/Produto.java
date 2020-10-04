@@ -1,9 +1,6 @@
 package com.si.safe_share.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,6 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 public class Produto {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
