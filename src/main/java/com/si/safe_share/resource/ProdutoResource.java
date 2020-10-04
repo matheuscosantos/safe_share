@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.Produto;
 import com.si.safe_share.repository.ProdutoRepository;
+import com.si.safe_share.resource.form.ProdutoForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +12,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value="/api")
 public class ProdutoResource {
+
     @Autowired
     ProdutoRepository produtoRepository;
 
     @PostMapping("/produto")
-    public Produto salva(@RequestBody Produto produto) {
+    public Produto salva(@RequestBody ProdutoForm produtoForm) {
+        Produto produto = produtoForm.toModel(produtoForm);
         return produtoRepository.save(produto);
     }
 
@@ -34,15 +37,12 @@ public class ProdutoResource {
 
     @PutMapping("/produto/{id}")
     public Produto atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody Produto produto){
-        Optional<Produto> produtoAntigo = produtoRepository.findById(id);
-        if (produtoAntigo.isPresent()){
-            produtoAntigo.get().setCategoria(produto.getCategoria());
-            produtoAntigo.get().setDescricao(produto.getDescricao());
-            produtoAntigo.get().setValor(produto.getValor());
-            return produtoRepository.save(produtoAntigo.get());
-        }
-        return produtoAntigo.get();
+                            @RequestBody ProdutoForm produtoform){
+        Optional<Produto> produtoAntigoOpt = produtoRepository.findById(id);
+        Produto produtoAntigo = produtoAntigoOpt.get();
+        Produto produtoNovo = produtoform.toModel(produtoform);
+        Produto produtoAtualizado = produtoform.toModelUpdated(produtoAntigo, produtoNovo);
+        return produtoRepository.save(produtoAtualizado);
     }
 
     @GetMapping("/produtos")

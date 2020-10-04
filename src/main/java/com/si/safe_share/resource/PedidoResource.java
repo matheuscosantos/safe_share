@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.Pedido;
 import com.si.safe_share.repository.PedidoRepository;
+import com.si.safe_share.resource.form.PedidoForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,8 @@ public class PedidoResource {
     PedidoRepository pedidoRepository;
 
     @PostMapping("/pedido")
-    public Pedido salva(@RequestBody Pedido pedido) {
+    public Pedido salva(@RequestBody PedidoForm pedidoForm) {
+        Pedido pedido = pedidoForm.toModel(pedidoForm);
         return pedidoRepository.save(pedido);
     }
 
@@ -34,15 +36,15 @@ public class PedidoResource {
 
     @PutMapping("/pedido/{id}")
     public Pedido atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody Pedido pedido){
-        Optional<Pedido> pedidoAntigo = pedidoRepository.findById(id);
-        if (pedidoAntigo.isPresent()){
-            pedidoAntigo.get().setCliente(pedido.getCliente());
-            pedidoAntigo.get().setCarrinho(pedido.getCarrinho());
-            pedidoAntigo.get().setValorTotal(pedido.getValorTotal());
-            return pedidoRepository.save(pedidoAntigo.get());
-        }
-        return pedidoAntigo.get();
+                              @RequestBody PedidoForm pedidoForm){
+        Optional<Pedido> pedidoAntigoOpt = pedidoRepository.findById(id);
+        Pedido pedidoAntigo = pedidoAntigoOpt.get();
+        Pedido pedidoNovo = pedidoForm.toModel(pedidoForm);
+
+        Pedido pedidoAtualizado = pedidoForm.toModelUpdated(pedidoAntigo, pedidoNovo);
+
+        return pedidoRepository.save(pedidoAtualizado);
+
     }
 
     @GetMapping("/pedidos")

@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.LogCompartilhamento;
 import com.si.safe_share.repository.LogCompartilhamentoRepository;
+import com.si.safe_share.resource.form.LogCompartilhamentoForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,8 @@ public class LogCompartilhamentoResource {
     LogCompartilhamentoRepository logCompartilhamentoRepository;
 
     @PostMapping("/log-compartilhamento")
-    public LogCompartilhamento salva(@RequestBody LogCompartilhamento logCompartilhamento) {
+    public LogCompartilhamento salva(@RequestBody LogCompartilhamentoForm logCompartilhamentoForm) {
+        LogCompartilhamento logCompartilhamento = logCompartilhamentoForm.toModel(logCompartilhamentoForm);
         return logCompartilhamentoRepository.save(logCompartilhamento);
     }
 
@@ -34,18 +36,20 @@ public class LogCompartilhamentoResource {
 
     @PutMapping("/log-compartilhamento/{id}")
     public LogCompartilhamento atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody LogCompartilhamento logCompartilhamento){
-        Optional<LogCompartilhamento> logCompartilhamentoAntigo = logCompartilhamentoRepository.findById(id);
-        if (logCompartilhamentoAntigo.isPresent()){
-            logCompartilhamentoAntigo.get().setCliente(logCompartilhamento.getCliente());
-            logCompartilhamentoAntigo.get().setDadoCompartilhado(logCompartilhamento.getDadoCompartilhado());
-            logCompartilhamentoAntigo.get().setDataDeInicio(logCompartilhamento.getDataDeInicio());
-            logCompartilhamentoAntigo.get().setDataFinal(logCompartilhamento.getDataFinal());
-            logCompartilhamentoAntigo.get().setEmpresa(logCompartilhamento.getEmpresa());
+                                        @RequestBody LogCompartilhamentoForm logCompartilhamentoForm){
 
-            return logCompartilhamentoRepository.save(logCompartilhamentoAntigo.get());
-        }
-        return logCompartilhamentoAntigo.get();
+        Optional<LogCompartilhamento> logCompartilhamentoAntigoOpt = logCompartilhamentoRepository.findById(id);
+        LogCompartilhamento logCompartilhamentoAntigo = new LogCompartilhamento();
+        LogCompartilhamento logCompartilhamentoNovo = logCompartilhamentoForm.toModel(logCompartilhamentoForm);
+
+        logCompartilhamentoAntigo.setCliente(logCompartilhamentoNovo.getCliente());
+        logCompartilhamentoAntigo.setEmpresa(logCompartilhamentoNovo.getEmpresa());
+        logCompartilhamentoAntigo.setDadoCompartilhado(logCompartilhamentoNovo.getDadoCompartilhado());
+        logCompartilhamentoAntigo.setDataDeInicio(logCompartilhamentoNovo.getDataDeInicio());
+        logCompartilhamentoAntigo.setDataFinal(logCompartilhamentoNovo.getDataFinal());
+
+        LogCompartilhamento logCompartilhamentoAtualizado = logCompartilhamentoAntigo;
+        return logCompartilhamentoRepository.save(logCompartilhamentoAtualizado);
     }
 
     @GetMapping("/log-compartilhamentos")

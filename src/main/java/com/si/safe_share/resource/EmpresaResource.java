@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.Empresa;
 import com.si.safe_share.repository.EmpresaRepository;
+import com.si.safe_share.resource.form.EmpresaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,8 @@ class EmpresaResource {
     EmpresaRepository empresaRepository;
 
     @PostMapping("/empresa")
-    public Empresa salva(@RequestBody Empresa empresa) {
+    public Empresa salva(@RequestBody EmpresaForm empresaForm) {
+        Empresa empresa = empresaForm.toModel(empresaForm);
         return empresaRepository.save(empresa);
     }
 
@@ -37,13 +39,12 @@ class EmpresaResource {
 
     @PutMapping("/empresa/{id}")
     public Empresa atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody Empresa empresa){
-        Optional<Empresa> empresaAntigo = empresaRepository.findById(id);
-        if (empresaAntigo.isPresent()){
-            empresaAntigo.get().setNome(empresa.getNome());
-            return empresaRepository.save(empresaAntigo.get());
-        }
-        return empresaAntigo.get();
+                              @RequestBody EmpresaForm empresaForm){
+        Optional<Empresa> empresaAntigaOpt = empresaRepository.findById(id);
+        Empresa empresaAntiga = empresaAntigaOpt.get();
+        Empresa empresaNova = empresaForm.toModel(empresaForm);
+        Empresa empresaAtualizada = empresaForm.toModelUpdated(empresaAntiga, empresaNova);
+        return empresaRepository.save(empresaAtualizada);
     }
 
     @GetMapping("/empresas")
