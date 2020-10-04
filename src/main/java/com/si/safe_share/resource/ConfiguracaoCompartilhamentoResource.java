@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.ConfiguracaoCompartilhamento;
 import com.si.safe_share.repository.ConfiguracaoCompartilhamentoRepository;
+import com.si.safe_share.resource.form.ConfiguracaoCompartilhamentoForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,9 @@ public class ConfiguracaoCompartilhamentoResource {
     ConfiguracaoCompartilhamentoRepository configuracaoCompartilhamentoRepository;
 
     @PostMapping("/configuracaoCompartilhamento")
-    public ConfiguracaoCompartilhamento salva(@RequestBody ConfiguracaoCompartilhamento configuracaoCompartilhamento) {
+    public ConfiguracaoCompartilhamento salva(
+            @RequestBody ConfiguracaoCompartilhamentoForm configuracaoCompartilhamentoForm) {
+        ConfiguracaoCompartilhamento configuracaoCompartilhamento = configuracaoCompartilhamentoForm.toModel(configuracaoCompartilhamentoForm);
         return configuracaoCompartilhamentoRepository.save(configuracaoCompartilhamento);
     }
 
@@ -34,16 +37,13 @@ public class ConfiguracaoCompartilhamentoResource {
 
     @PutMapping("/configuracaoCompartilhamento/{id}")
     public ConfiguracaoCompartilhamento atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody ConfiguracaoCompartilhamento configuracaoCompartilhamento){
-        Optional<ConfiguracaoCompartilhamento> configuracaoCompartilhamentoAntigo = configuracaoCompartilhamentoRepository.findById(id);
-        if (configuracaoCompartilhamentoAntigo.isPresent()){
-            configuracaoCompartilhamentoAntigo.get().getCliente();
-            configuracaoCompartilhamentoAntigo.get().getCompartilha_dados_compras();
-            configuracaoCompartilhamentoAntigo.get().getCompartilha_dados_pessoais();
+                              @RequestBody ConfiguracaoCompartilhamentoForm configuracaoCompartilhamentoForm){
 
-            return configuracaoCompartilhamentoRepository.save(configuracaoCompartilhamentoAntigo.get());
-        }
-        return configuracaoCompartilhamentoAntigo.get();
+        Optional<ConfiguracaoCompartilhamento> configuracaoCompartilhamentoAntigaOpt = configuracaoCompartilhamentoRepository.findById(id);
+        ConfiguracaoCompartilhamento configuracaoCompartilhamentoAntiga = configuracaoCompartilhamentoAntigaOpt.get();
+        ConfiguracaoCompartilhamento configuracaoCompartilhamentoNova = configuracaoCompartilhamentoForm.toModel(configuracaoCompartilhamentoForm);
+        ConfiguracaoCompartilhamento configuracaoCompartilhamentoAtualizada = configuracaoCompartilhamentoForm.toModelUpdated(configuracaoCompartilhamentoAntiga, configuracaoCompartilhamentoNova);
+        return configuracaoCompartilhamentoRepository.save(configuracaoCompartilhamentoAtualizada);
     }
 
     @GetMapping("/configuracao-compartilhamentos")

@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.Categoria;
 import com.si.safe_share.repository.CategoriaRepository;
+import com.si.safe_share.resource.form.CategoriaForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,8 @@ public class CategoriaResource {
     CategoriaRepository categoriaRepository;
 
     @PostMapping("/categoria")
-    public Categoria salva(@RequestBody Categoria categoria) {
+    public Categoria salva(@RequestBody CategoriaForm categoriaForm) {
+        Categoria categoria = categoriaForm.toModel(categoriaForm);
         return categoriaRepository.save(categoria);
     }
 
@@ -34,13 +36,12 @@ public class CategoriaResource {
 
     @PutMapping("/categoria/{id}")
     public Categoria atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody Categoria categoria){
-        Optional<Categoria> categoriaAntigo = categoriaRepository.findById(id);
-        if (categoriaAntigo.isPresent()){
-            categoriaAntigo.get().setDescricao(categoria.getDescricao());
-            return categoriaRepository.save(categoriaAntigo.get());
-        }
-        return categoriaAntigo.get();
+                              @RequestBody CategoriaForm categoriaForm){
+        Optional<Categoria> categoriaAntigaOpt = categoriaRepository.findById(id);
+        Categoria categoriaAntiga = categoriaAntigaOpt.get();
+        Categoria categoriaNova = categoriaForm.toModel(categoriaForm);
+        Categoria categoriaAtualizada = categoriaForm.toModelUpdated(categoriaAntiga, categoriaNova);
+        return categoriaRepository.save(categoriaAtualizada);
     }
 
     @GetMapping("/categorias")

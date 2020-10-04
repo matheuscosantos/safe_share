@@ -2,6 +2,7 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.Carrinho;
 import com.si.safe_share.repository.CarrinhoRepository;
+import com.si.safe_share.resource.form.CarrinhoForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,8 @@ public class CarrinhoResource {
     CarrinhoRepository carrinhoRepository;
 
     @PostMapping("/carrinho")
-    public Carrinho salva(@RequestBody Carrinho carrinho) {
+    public Carrinho salva(@RequestBody CarrinhoForm carrinhoForm) {
+        Carrinho carrinho = carrinhoForm.toModel(carrinhoForm);
         return carrinhoRepository.save(carrinho);
     }
 
@@ -34,14 +36,16 @@ public class CarrinhoResource {
 
     @PutMapping("/carrinho/{id}")
     public Carrinho atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody Carrinho carrinho){
-        Optional<Carrinho> carrinhoAntigo = carrinhoRepository.findById(id);
-        if (carrinhoAntigo.isPresent()){
-            carrinhoAntigo.get().setProdutos(carrinho.getProdutos());
-            carrinhoAntigo.get().setCliente(carrinho.getCliente());
-            return carrinhoRepository.save(carrinhoAntigo.get());
-        }
-        return carrinhoAntigo.get();
+                             @RequestBody CarrinhoForm carrinhoForm){
+
+        Optional<Carrinho> carrinhoOpt = carrinhoRepository.findById(id);
+
+        Carrinho carrinhoAntigo = carrinhoOpt.get();
+        Carrinho carrinhoNovo = carrinhoForm.toModel(carrinhoForm);
+
+        Carrinho carrinhoAtualizado = carrinhoForm.toModelUpdated(carrinhoAntigo, carrinhoNovo);
+
+        return carrinhoRepository.save(carrinhoAtualizado);
     }
 
     @GetMapping("/carrinhos")
