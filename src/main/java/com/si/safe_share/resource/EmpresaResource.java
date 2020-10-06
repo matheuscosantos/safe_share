@@ -4,6 +4,8 @@ import com.si.safe_share.model.Empresa;
 import com.si.safe_share.repository.EmpresaRepository;
 import com.si.safe_share.resource.form.EmpresaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +22,12 @@ class EmpresaResource {
 
     @PostMapping("/empresa")
     public Empresa salva(@RequestBody EmpresaForm empresaForm) {
-        Empresa empresa = empresaForm.toModel(empresaForm);
-        return empresaRepository.save(empresa);
+        Empresa empresa = Empresa.builder()
+                .nome(empresaForm.getNome())
+                .build();
+        Empresa nova = empresaRepository.save(empresa);
+        return nova;
+
     }
 
     @GetMapping("/empresa/{id}")
@@ -38,13 +44,16 @@ class EmpresaResource {
     }
 
     @PutMapping("/empresa/{id}")
-    public Empresa atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody EmpresaForm empresaForm){
-        Optional<Empresa> empresaAntigaOpt = empresaRepository.findById(id);
-        Empresa empresaAntiga = empresaAntigaOpt.get();
-        Empresa empresaNova = empresaForm.toModel(empresaForm);
-        Empresa empresaAtualizada = empresaForm.toModelUpdated(empresaAntiga, empresaNova);
-        return empresaRepository.save(empresaAtualizada);
+    @Transactional
+    public ResponseEntity<Empresa> atualiza(@PathVariable(value="id") Integer id,
+                                           @RequestBody EmpresaForm empresaForm){
+
+        return empresaRepository.findById(id)
+                .map(empresa -> {
+                    empresa.setNome(empresaForm.getNome());
+                    Empresa atualizada = empresaRepository.save(empresa);
+                    return ResponseEntity.ok().body(atualizada);
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/empresas")

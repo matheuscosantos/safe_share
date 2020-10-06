@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-@Getter
 public class ConfiguracaoCompartilhamentoForm {
 
     private Integer cliente;
@@ -19,13 +18,8 @@ public class ConfiguracaoCompartilhamentoForm {
     ClienteRepository clienteRepository;
 
     public ConfiguracaoCompartilhamento toModel(ConfiguracaoCompartilhamentoForm configuracaoCompartilhamentoForm) {
-
-        Optional<Cliente> clienteOpt = clienteRepository.findById(configuracaoCompartilhamentoForm.getCliente());
-        Cliente cliente = clienteOpt.get();
-
-        ConfiguracaoCompartilhamento configuracaoCompartilhamento = new ConfiguracaoCompartilhamento();
-
-        ConfiguracaoCompartilhamento.builder()
+        Cliente cliente = clienteRepository.getOne(configuracaoCompartilhamentoForm.getCliente());
+        ConfiguracaoCompartilhamento configuracaoCompartilhamento = ConfiguracaoCompartilhamento.builder()
                 .cliente(cliente)
                 .compartilha_dados_compras(configuracaoCompartilhamentoForm.getCompartilha_dados_compras())
                 .compartilha_dados_pessoais(configuracaoCompartilhamentoForm.getCompartilha_dados_pessoais())
@@ -43,4 +37,15 @@ public class ConfiguracaoCompartilhamentoForm {
         return configuracaoCompartilhamentoAtualizada;
     }
 
+    public Integer getCliente() {
+        return cliente;
+    }
+
+    public Boolean getCompartilha_dados_pessoais() {
+        return compartilha_dados_pessoais;
+    }
+
+    public Boolean getCompartilha_dados_compras() {
+        return compartilha_dados_compras;
+    }
 }

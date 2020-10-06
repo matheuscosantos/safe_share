@@ -4,6 +4,7 @@ import com.si.safe_share.model.Categoria;
 import com.si.safe_share.repository.CategoriaRepository;
 import com.si.safe_share.resource.form.CategoriaForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,13 +36,14 @@ public class CategoriaResource {
     }
 
     @PutMapping("/categoria/{id}")
-    public Categoria atualiza(@PathVariable(value="id") Integer id,
+    public ResponseEntity<Categoria> atualiza(@PathVariable(value="id") Integer id,
                               @RequestBody CategoriaForm categoriaForm){
-        Optional<Categoria> categoriaAntigaOpt = categoriaRepository.findById(id);
-        Categoria categoriaAntiga = categoriaAntigaOpt.get();
-        Categoria categoriaNova = categoriaForm.toModel(categoriaForm);
-        Categoria categoriaAtualizada = categoriaForm.toModelUpdated(categoriaAntiga, categoriaNova);
-        return categoriaRepository.save(categoriaAtualizada);
+        return categoriaRepository.findById(id)
+                .map(categoria -> {
+                    categoria.setDescricao(categoriaForm.getDescricao());
+                    Categoria atualizada = categoriaRepository.save(categoria);
+                    return ResponseEntity.ok().body(atualizada);
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/categorias")
