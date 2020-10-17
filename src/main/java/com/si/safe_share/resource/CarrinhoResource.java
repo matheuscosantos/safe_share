@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value = "/api")
 public class CarrinhoResource {
     @Autowired
     CarrinhoRepository carrinhoRepository;
@@ -22,21 +22,21 @@ public class CarrinhoResource {
     }
 
     @GetMapping("/carrinho/{id}")
-    public Optional<Carrinho> buscaPorId(@PathVariable(value="id") Integer id){
+    public Optional<Carrinho> buscaPorId(@PathVariable(value = "id") Integer id) {
         return carrinhoRepository.findById(id);
     }
 
-    @DeleteMapping("/carrinho/{id}")
-    public void apagaPorId(@PathVariable(value="id") Integer id){
-        Optional<Carrinho> carrinho = carrinhoRepository.findById(id);
-        if (carrinho.isPresent()){
-            carrinhoRepository.delete(carrinho.get());
-        }
-    }
+//    @DeleteMapping("/carrinho/{id}")
+//    public void apagaPorId(@PathVariable(value = "id") Integer id) {
+//        Optional<Carrinho> carrinho = carrinhoRepository.findById(id);
+//        if (carrinho.isPresent()) {
+//            carrinhoRepository.delete(carrinho.get());
+//        }
+//    }
 
     @PutMapping("/carrinho/{id}")
-    public Carrinho atualiza(@PathVariable(value="id") Integer id,
-                             @RequestBody CarrinhoForm carrinhoForm){
+    public Carrinho atualiza(@PathVariable(value = "id") Integer id,
+                             @RequestBody CarrinhoForm carrinhoForm) {
 
         Optional<Carrinho> carrinhoOpt = carrinhoRepository.findById(id);
 
@@ -48,8 +48,8 @@ public class CarrinhoResource {
         return carrinhoRepository.save(carrinhoAtualizado);
     }
 
-    @GetMapping("/carrinhos")
-    public List<Carrinho> lista(){
-        return carrinhoRepository.findAll();
-    }
+//    @GetMapping("/carrinhos")
+//    public List<Carrinho> lista() {
+//        return carrinhoRepository.findAll();
+//    }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value = "/api")
 class EmpresaResource {
 
     //    Injeção de dependência
@@ -31,22 +31,22 @@ class EmpresaResource {
     }
 
     @GetMapping("/empresa/{id}")
-    public Optional<Empresa> buscaPorId(@PathVariable(value="id") Integer id){
+    public Optional<Empresa> buscaPorId(@PathVariable(value = "id") Integer id) {
         return empresaRepository.findById(id);
     }
 
-    @DeleteMapping("/empresa/{id}")
-    public void apagaPorId(@PathVariable(value="id") Integer id){
-        Optional<Empresa> empresa = empresaRepository.findById(id);
-        if (empresa.isPresent()){
-            empresaRepository.delete(empresa.get());
-        }
-    }
+//    @DeleteMapping("/empresa/{id}")
+//    public void apagaPorId(@PathVariable(value = "id") Integer id) {
+//        Optional<Empresa> empresa = empresaRepository.findById(id);
+//        if (empresa.isPresent()) {
+//            empresaRepository.delete(empresa.get());
+//        }
+//    }
 
     @PutMapping("/empresa/{id}")
     @Transactional
-    public ResponseEntity<Empresa> atualiza(@PathVariable(value="id") Integer id,
-                                           @RequestBody EmpresaForm empresaForm){
+    public ResponseEntity<Empresa> atualiza(@PathVariable(value = "id") Integer id,
+                                            @RequestBody EmpresaForm empresaForm) {
 
         return empresaRepository.findById(id)
                 .map(empresa -> {
@@ -57,7 +57,7 @@ class EmpresaResource {
     }
 
     @GetMapping("/empresas")
-    public List<Empresa> lista(){
+    public List<Empresa> lista() {
         return empresaRepository.findAll();
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value = "/api")
 public class PedidoResource {
     @Autowired
     PedidoRepository pedidoRepository;
@@ -22,21 +22,21 @@ public class PedidoResource {
     }
 
     @GetMapping("/pedido/{id}")
-    public Optional<Pedido> buscaPorId(@PathVariable(value="id") Integer id){
+    public Optional<Pedido> buscaPorId(@PathVariable(value = "id") Integer id) {
         return pedidoRepository.findById(id);
     }
 
-    @DeleteMapping("/pedido/{id}")
-    public void apagaPorId(@PathVariable(value="id") Integer id){
-        Optional<Pedido> pedido = pedidoRepository.findById(id);
-        if (pedido.isPresent()){
-            pedidoRepository.delete(pedido.get());
-        }
-    }
+//    @DeleteMapping("/pedido/{id}")
+//    public void apagaPorId(@PathVariable(value = "id") Integer id) {
+//        Optional<Pedido> pedido = pedidoRepository.findById(id);
+//        if (pedido.isPresent()) {
+//            pedidoRepository.delete(pedido.get());
+//        }
+//    }
 
     @PutMapping("/pedido/{id}")
-    public Pedido atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody PedidoForm pedidoForm){
+    public Pedido atualiza(@PathVariable(value = "id") Integer id,
+                           @RequestBody PedidoForm pedidoForm) {
         Optional<Pedido> pedidoAntigoOpt = pedidoRepository.findById(id);
         Pedido pedidoAntigo = pedidoAntigoOpt.get();
         Pedido pedidoNovo = pedidoForm.toModel(pedidoForm);
@@ -48,7 +48,7 @@ public class PedidoResource {
     }
 
     @GetMapping("/pedidos")
-    public List<Pedido> lista(){
+    public List<Pedido> lista() {
         return pedidoRepository.findAll();
     }
 }

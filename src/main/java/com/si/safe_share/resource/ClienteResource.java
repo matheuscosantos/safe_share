@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value = "/api")
 public class ClienteResource {
 
     @Autowired
@@ -23,25 +23,25 @@ public class ClienteResource {
     }
 
     @GetMapping("/cliente/{id}")
-    public ResponseEntity buscaPorId(@PathVariable Integer id){
+    public ResponseEntity buscaPorId(@PathVariable Integer id) {
 
         return clienteRepository.findById(id)
                 .map(cliente -> ResponseEntity.ok().body(cliente))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/cliente/{id}")
-    public ResponseEntity<?> apagaPorId(@PathVariable Integer id){
-        return clienteRepository.findById(id)
-                .map(cliente -> {
-                    clienteRepository.deleteById(id);
-                    return ResponseEntity.ok().build();
-                }).orElse(ResponseEntity.notFound().build());
-    }
+//    @DeleteMapping("/cliente/{id}")
+//    public ResponseEntity<?> apagaPorId(@PathVariable Integer id) {
+//        return clienteRepository.findById(id)
+//                .map(cliente -> {
+//                    clienteRepository.deleteById(id);
+//                    return ResponseEntity.ok().build();
+//                }).orElse(ResponseEntity.notFound().build());
+//    }
 
     @PutMapping("/cliente/{id}")
-    public ResponseEntity<Cliente> atualiza(@PathVariable(value="id") Integer id,
-                                            @RequestBody ClienteForm clienteForm){
+    public ResponseEntity<Cliente> atualiza(@PathVariable(value = "id") Integer id,
+                                            @RequestBody ClienteForm clienteForm) {
         return clienteRepository.findById(id)
                 .map(cliente -> {
                     cliente.setNome(clienteForm.getNome());
@@ -57,7 +57,7 @@ public class ClienteResource {
     }
 
     @GetMapping("/clientes")
-    public List<Cliente> lista(){
+    public List<Cliente> lista() {
         return clienteRepository.findAll();
     }
 }

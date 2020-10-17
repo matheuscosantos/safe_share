@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value = "/api")
 public class CategoriaResource {
     @Autowired
     CategoriaRepository categoriaRepository;
@@ -23,21 +23,21 @@ public class CategoriaResource {
     }
 
     @GetMapping("/categoria/{id}")
-    public Optional<Categoria> buscaPorId(@PathVariable(value="id") Integer id){
+    public Optional<Categoria> buscaPorId(@PathVariable(value = "id") Integer id) {
         return categoriaRepository.findById(id);
     }
 
-    @DeleteMapping("/categoria/{id}")
-    public void apagaPorId(@PathVariable(value="id") Integer id){
-        Optional<Categoria> categoria = categoriaRepository.findById(id);
-        if (categoria.isPresent()){
-            categoriaRepository.delete(categoria.get());
-        }
-    }
+//    @DeleteMapping("/categoria/{id}")
+//    public void apagaPorId(@PathVariable(value = "id") Integer id) {
+//        Optional<Categoria> categoria = categoriaRepository.findById(id);
+//        if (categoria.isPresent()) {
+//            categoriaRepository.delete(categoria.get());
+//        }
+//    }
 
     @PutMapping("/categoria/{id}")
-    public ResponseEntity<Categoria> atualiza(@PathVariable(value="id") Integer id,
-                              @RequestBody CategoriaForm categoriaForm){
+    public ResponseEntity<Categoria> atualiza(@PathVariable(value = "id") Integer id,
+                                              @RequestBody CategoriaForm categoriaForm) {
         return categoriaRepository.findById(id)
                 .map(categoria -> {
                     categoria.setDescricao(categoriaForm.getDescricao());
@@ -47,7 +47,7 @@ public class CategoriaResource {
     }
 
     @GetMapping("/categorias")
-    public List<Categoria> lista(){
+    public List<Categoria> lista() {
         return categoriaRepository.findAll();
     }
 }
