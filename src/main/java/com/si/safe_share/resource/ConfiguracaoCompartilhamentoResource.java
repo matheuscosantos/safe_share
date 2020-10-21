@@ -2,13 +2,16 @@ package com.si.safe_share.resource;
 
 import com.si.safe_share.model.Cliente;
 import com.si.safe_share.model.ConfiguracaoCompartilhamento;
+import com.si.safe_share.model.Chaves;
 import com.si.safe_share.repository.ClienteRepository;
 import com.si.safe_share.repository.ConfiguracaoCompartilhamentoRepository;
+import com.si.safe_share.repository.ContainerDeChavesRepository;
 import com.si.safe_share.resource.form.ConfiguracaoCompartilhamentoForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 import java.io.IOException;
 import java.security.*;
 
@@ -32,25 +35,46 @@ public class ConfiguracaoCompartilhamentoResource {
     @Autowired
     ClienteRepository clienteRepository;
 
+    @Autowired
+    ContainerDeChavesRepository containerRepository;
+
     @PostMapping("/configuracaoCompartilhamento")
     @Transactional
     public ConfiguracaoCompartilhamento salva(
-            @RequestBody ConfiguracaoCompartilhamentoForm configuracaoCompartilhamentoForm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, InvalidAlgorithmParameterException {
-        Optional<Cliente> cliente = clienteRepository.findById(configuracaoCompartilhamentoForm.getCliente());
+            @RequestBody ConfiguracaoCompartilhamentoForm compartilhamentoForm) throws NoSuchPaddingException,
+                                                                                       NoSuchAlgorithmException,
+                                                                                       InvalidKeyException,
+                                                                                       BadPaddingException,
+                                                                                       IllegalBlockSizeException,
+                                                                                       IOException,
+                                                                                       InvalidAlgorithmParameterException {
+
+        Optional<Cliente> cliente = clienteRepository.findById(compartilhamentoForm.getCliente());
         ConfiguracaoCompartilhamento configuracaoCompartilhamento = ConfiguracaoCompartilhamento.builder()
                         .cliente(cliente.get())
-                        .compartilha_dados_pessoais(configuracaoCompartilhamentoForm.getCompartilha_dados_pessoais())
-                        .compartilha_dados_compras(configuracaoCompartilhamentoForm.getCompartilha_dados_compras())
+                        .compartilha_dados_pessoais(compartilhamentoForm.getCompartilha_dados_pessoais())
+                        .compartilha_dados_compras(compartilhamentoForm.getCompartilha_dados_compras())
                         .build();
-
-        String encryptionKey           = "ABCDEFGHIJKLMNOP";
+        Optional<Chaves> container = containerRepository.findByClienteId(compartilhamentoForm.getCliente());
+        String encryptionKey = "";
         String characterEncoding       = "UTF-8";
         String cipherTransformation    = "AES/CBC/PKCS5PADDING";
         String aesEncryptionAlgorithem = "AES";
 
-        if(configuracaoCompartilhamentoForm.getCompartilha_dados_pessoais() == false){
-            Cipher cipher   = Cipher.getInstance(cipherTransformation);
-            byte[] key      = encryptionKey.getBytes(characterEncoding);
+        if(container.isPresent()){
+            encryptionKey = container.get().getChave();
+        }else{
+            encryptionKey = UUID.randomUUID().toString().substring(0,16);
+            Chaves chaveCriada = Chaves.builder()
+                    .cliente(cliente.get())
+                    .chave(encryptionKey)
+                    .build();
+            containerRepository.save(chaveCriada);
+        }
+
+        if(compartilhamentoForm.getCompartilha_dados_pessoais() == false){
+            Cipher cipher = Cipher.getInstance(cipherTransformation);
+            byte[] key = encryptionKey.getBytes(characterEncoding);
             SecretKeySpec secretKey = new SecretKeySpec(key, aesEncryptionAlgorithem);
             IvParameterSpec ivparameterspec = new IvParameterSpec(key);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivparameterspec);
@@ -73,15 +97,14 @@ public class ConfiguracaoCompartilhamentoResource {
 
             cliente.get().setEmail(emailCriptografado);
             cliente.get().setCpf(cpfCriptografado);
-            cliente.get().setCpf(nomeCriptografado);
             cliente.get().setNome(nomeCriptografado);
             cliente.get().setSobrenome(sobrenomeCriptografado);
             cliente.get().setTelefone(telefoneCriptografado);
             cliente.get().setEndereco(enderecoCriptografado);
 
-            Cliente clienteAtualizado = clienteRepository.save(cliente.get());
+            clienteRepository.save(cliente.get());
 
-        }else if(configuracaoCompartilhamentoForm.getCompartilha_dados_pessoais() == true){
+        }else if(compartilhamentoForm.getCompartilha_dados_pessoais() == true){
             Cipher cipher = Cipher.getInstance(cipherTransformation);
             byte[] key = encryptionKey.getBytes(characterEncoding);
             SecretKeySpec secretKey = new SecretKeySpec(key, aesEncryptionAlgorithem);
@@ -120,25 +143,6 @@ public class ConfiguracaoCompartilhamentoResource {
     public Optional<ConfiguracaoCompartilhamento> buscaPorId(@PathVariable(value = "id") Integer id) {
         return configuracaoCompartilhamentoRepository.findById(id);
     }
-
-//    @DeleteMapping("/configuracaoCompartilhamento/{id}")
-//    public void apagaPorId(@PathVariable(value = "id") Integer id) {
-//        Optional<ConfiguracaoCompartilhamento> configuracaoCompartilhamento = configuracaoCompartilhamentoRepository.findById(id);
-//        if (configuracaoCompartilhamento.isPresent()) {
-//            configuracaoCompartilhamentoRepository.delete(configuracaoCompartilhamento.get());
-//        }
-//    }
-
-//    @PutMapping("/configuracaoCompartilhamento/{id}")
-//    public ConfiguracaoCompartilhamento atualiza(@PathVariable(value = "id") Integer id,
-//                                                 @RequestBody ConfiguracaoCompartilhamentoForm configuracaoCompartilhamentoForm) {
-//
-//        Optional<ConfiguracaoCompartilhamento> configuracaoCompartilhamentoAntigaOpt = configuracaoCompartilhamentoRepository.findById(id);
-//        ConfiguracaoCompartilhamento configuracaoCompartilhamentoAntiga = configuracaoCompartilhamentoAntigaOpt.get();
-//        ConfiguracaoCompartilhamento configuracaoCompartilhamentoNova = configuracaoCompartilhamentoForm.toModel(configuracaoCompartilhamentoForm);
-//        ConfiguracaoCompartilhamento configuracaoCompartilhamentoAtualizada = configuracaoCompartilhamentoForm.toModelUpdated(configuracaoCompartilhamentoAntiga, configuracaoCompartilhamentoNova);
-//        return configuracaoCompartilhamentoRepository.save(configuracaoCompartilhamentoAtualizada);
-//    }
 
     @GetMapping("/configuracao-compartilhamentos")
     public List<ConfiguracaoCompartilhamento> lista() {
